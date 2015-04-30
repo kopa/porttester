@@ -7,7 +7,7 @@
 #include <string.h>
 #include <errno.h>
 
-int check_connected(char *hostname, char *portno, int timeout) {
+int check_connected(char *hostname, char *portno, int timeout, int socktype) {
     int sockfd, ret, s;
     struct addrinfo hints;
     struct addrinfo *addr, *rp;
@@ -16,7 +16,7 @@ int check_connected(char *hostname, char *portno, int timeout) {
 
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = socktype;
     hints.ai_protocol = 0;          /* Any protocol */
     hints.ai_canonname = NULL;
     hints.ai_addr = NULL;
@@ -98,16 +98,20 @@ int check_connected(char *hostname, char *portno, int timeout) {
         freeaddrinfo(addr);
         close(sockfd);
     }
-
+    sleep(1);
     return 0;
 
 }
 
 int main() {
 
-    check_connected("digicluster365.at", "1194", 5);
-    check_connected("digicluster365.at", "1195", 5);
-    check_connected("144.76.4.6", "1194", 5);
-    check_connected("144.76.4.6", "50000", 5);
+    check_connected("digicluster365.at", "1194", 5, SOCK_DGRAM);
+    check_connected("digicluster365.at", "1194", 5, SOCK_STREAM);
+    check_connected("digicluster365.at", "1195", 5, SOCK_DGRAM);
+    check_connected("digicluster365.at", "1195", 5, SOCK_STREAM);
+    check_connected("144.76.4.6", "1194", 5, SOCK_DGRAM);
+    check_connected("144.76.4.6", "1194", 5, SOCK_STREAM);
+    check_connected("144.76.4.6", "50000", 5, SOCK_DGRAM);
+    check_connected("144.76.4.6", "50000", 5, SOCK_STREAM);
 
 }
